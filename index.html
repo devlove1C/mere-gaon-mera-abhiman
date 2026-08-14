@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Mere Gaon Mera Abhiman</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f1f3f5;
+      color: #222;
+    }
+
+    header {
+      background: linear-gradient(135deg, #ff9933, #ff7a00);
+      color: white;
+      text-align: center;
+      padding: 22px 15px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 26px;
+    }
+
+    header p {
+      margin: 8px 0 0;
+      opacity: 0.95;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 25px auto;
+      padding: 0 15px;
+
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 25px;
+    }
+
+    .panel {
+      background: white;
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .panel h2 {
+      margin-top: 0;
+      font-size: 20px;
+    }
+
+    /* Canvas preview */
+    .preview-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #ddd;
+      border-radius: 12px;
+      padding: 15px;
+    }
+
+    canvas {
+      width: 100%;
+      max-width: 420px;
+      height: auto;
+      border-radius: 8px;
+      display: block;
+      background: white;
+    }
+
+    /* Upload */
+    .upload-box {
+      border: 2px dashed #ff9933;
+      border-radius: 12px;
+      padding: 25px;
+      text-align: center;
+      cursor: pointer;
+      transition: 0.2s;
+      margin-bottom: 20px;
+    }
+
+    .upload-box:hover {
+      background: #fff7ef;
+    }
+
+    .upload-box input {
+      display: none;
+    }
+
+    .upload-icon {
+      font-size: 40px;
+      margin-bottom: 10px;
+    }
+
+    /* Controls */
+    .control {
+      margin: 18px 0;
+    }
+
+    .control label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 7px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    button {
+      border: none;
+      border-radius: 9px;
+      padding: 13px 15px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .download {
+      background: #138a36;
+      color: white;
+    }
+
+    .download:hover {
+      background: #0e6f2b;
+    }
+
+    .reset {
+      background: #eee;
+      color: #333;
+    }
+
+    .reset:hover {
+      background: #ddd;
+    }
+
+    .share {
+      width: 100%;
+      margin-top: 10px;
+      background: #1877f2;
+      color: white;
+    }
+
+    .hint {
+      background: #fff8e8;
+      border-left: 4px solid #ff9933;
+      padding: 12px;
+      border-radius: 6px;
+      margin-top: 20px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    footer {
+      text-align: center;
+      padding: 25px;
+      color: #777;
+      font-size: 14px;
+    }
+
+    @media (max-width: 800px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+
+      header h1 {
+        font-size: 22px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>🇮🇳 Mere Gaon Mera Abhiman</h1>
+  <p>Create your personalized status</p>
+</header>
+
+
+<div class="container">
+
+  <!-- LEFT: PREVIEW -->
+  <div class="panel">
+
+    <h2>Preview</h2>
+
+    <div class="preview-wrapper">
+      <canvas id="canvas" width="1080" height="1920"></canvas>
+    </div>
+
+  </div>
+
+
+  <!-- RIGHT: CONTROLS -->
+  <div class="panel">
+
+    <h2>Create Your Status</h2>
+
+    <!-- Upload -->
+    <label class="upload-box">
+
+      <input
+        type="file"
+        id="photoInput"
+        accept="image/*"
+      />
+
+      <div class="upload-icon">📷</div>
+
+      <strong>Click to Add Your Photo</strong>
+
+      <p>
+        Select a photo from your phone
+      </p>
+
+    </label>
+
+
+    <!-- Text -->
+    <div class="control">
+
+      <label for="title">
+        Main Text
+      </label>
+
+      <input
+        type="text"
+        id="title"
+        value="MERE GAON"
+        maxlength="30"
+      />
+
+    </div>
+
+
+    <div class="control">
+
+      <label for="subtitle">
+        Subtitle
+      </label>
+
+      <input
+        type="text"
+        id="subtitle"
+        value="MERA ABHIMAN"
+        maxlength="30"
+      />
+
+    </div>
+
+
+    <!-- Zoom -->
+    <div class="control">
+
+      <label>
+        Photo Zoom
+        <span id="zoomValue">1.0</span>
+      </label>
+
+      <input
+        type="range"
+        id="zoom"
+        min="0.5"
+        max="2.5"
+        step="0.1"
+        value="1"
+      />
+
+    </div>
+
+
+    <!-- X Position -->
+    <div class="control">
+
+      <label>
+        Photo Horizontal Position
+      </label>
+
+      <input
+        type="range"
+        id="positionX"
+        min="-300"
+        max="300"
+        value="0"
+      />
+
+    </div>
+
+
+    <!-- Y Position -->
+    <div class="control">
+
+      <label>
+        Photo Vertical Position
+      </label>
+
+      <input
+        type="range"
+        id="positionY"
+        min="-300"
+        max="300"
+        value="0"
+      />
+
+    </div>
+
+
+    <div class="buttons">
+
+      <button
+        class="download"
+        id="downloadBtn"
+      >
+        ⬇ Download Status
+      </button>
+
+      <button
+        class="reset"
+        id="resetBtn"
+      >
+        Reset
+      </button>
+
+    </div>
+
+
+    <button
+      class="share"
+      id="shareBtn"
+    >
+      📤 Share Status
+    </button>
+
+
+    <div class="hint">
+
+      <strong>Tip:</strong>
+
+      Add your photo, adjust the zoom and position,
+      then click <b>Download Status</b>.
+
+      Your photo stays on your device and is not
+      uploaded to a server.
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<footer>
+  Made with ❤️ for Mere Gaon Mera Abhiman
+</footer>
+
+
+<script>
+
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d");
+
+  const photoInput = document.getElementById("photoInput");
+
+  const titleInput = document.getElementById("title");
+  const subtitleInput = document.getElementById("subtitle");
+
+  const zoomInput = document.getElementById("zoom");
+  const positionXInput = document.getElementById("positionX");
+  const positionYInput = document.getElementById("positionY");
+
+  const zoomValue = document.getElementById("zoomValue");
+
+  const downloadBtn = document.getElementById("downloadBtn");
+  const resetBtn = document.getElementById("resetBtn");
+  const shareBtn = document.getElementById("shareBtn");
+
+
+  let photo = null;
+
+
+  /*
+   * ----------------------------------------------------
+   * DRAW STATUS
+   * ----------------------------------------------------
+   */
+
+  function drawStatus() {
+
+    const W = canvas.width;
+    const H = canvas.height;
+
+
+    /*
+     * Background
+     */
+
+    const background =
+      ctx.createLinearGradient(0, 0, 0, H);
+
+    background.addColorStop(0, "#ff9933");
+    background.addColorStop(0.25, "#fff7e6");
+    background.addColorStop(0.70, "#ffffff");
+    background.addColorStop(1, "#138a36");
+
+    ctx.fillStyle = background;
+
+    ctx.fillRect(0, 0, W, H);
+
+
+    /*
+     * Decorative top
+     */
+
+    ctx.fillStyle = "#ffffff";
+
+    ctx.globalAlpha = 0.9;
+
+    ctx.beginPath();
+
+    ctx.arc(
+      W / 2,
+      230,
+      130,
+      0,
+      Math.PI * 2
+    );
+
+    ctx.fill();
+
+    ctx.globalAlpha = 1;
+
+
+    /*
+     * Main title
+     */
+
+    ctx.textAlign = "center";
+
+    ctx.fillStyle = "#c45100";
+
+    ctx.font =
+      "bold 90px Arial";
+
+    ctx.fillText(
+      titleInput.value,
+      W / 2,
+      170
+    );
+
+
+    ctx.fillStyle = "#138a36";
+
+    ctx.font =
+      "bold 85px Arial";
+
+    ctx.fillText(
+      subtitleInput.value,
+      W / 2,
+      270
+    );
+
+
+    /*
+     * Photo area
+     */
+
+    const photoX = W / 2;
+    const photoY = 850;
+
+    const photoWidth = 800;
+    const photoHeight = 900;
+
+
+    /*
+     * Photo clipping
+     */
+
+    ctx.save();
+
+    roundedRect(
+      ctx,
+      photoX - photoWidth / 2,
+      photoY - photoHeight / 2,
+      photoWidth,
+      photoHeight,
+      40
+    );
+
+    ctx.clip();
+
+
+    if (photo) {
+
+      const zoom =
+        parseFloat(zoomInput.value);
+
+      const xOffset =
+        parseInt(positionXInput.value);
+
+      const yOffset =
+        parseInt(positionYInput.value);
+
+
+      /*
+       * Calculate image dimensions
+       */
+
+      const imageRatio =
+        photo.width / photo.height;
+
+      const boxRatio =
+        photoWidth / photoHeight;
+
+      let drawWidth;
+      let drawHeight;
+
+
+      if (imageRatio > boxRatio) {
+
+        drawHeight = photoHeight;
+        drawWidth =
+          drawHeight * imageRatio;
+
+      } else {
+
+        drawWidth = photoWidth;
+        drawHeight =
+          drawWidth / imageRatio;
+
+      }
+
+
+      drawWidth *= zoom;
+      drawHeight *= zoom;
+
+
+      const drawX =
+        photoX -
+        drawWidth / 2 +
+        xOffset;
+
+      const drawY =
+        photoY -
+        drawHeight / 2 +
+        yOffset;
+
+
+      ctx.drawImage(
+        photo,
+        drawX,
+        drawY,
+        drawWidth,
+        drawHeight
+      );
+
+    } else {
+
+      /*
+       * Placeholder
+       */
+
+      ctx.fillStyle = "#eeeeee";
+
+      ctx.fillRect(
+        photoX - photoWidth / 2,
+        photoY - photoHeight / 2,
+        photoWidth,
+        photoHeight
+      );
+
+
+      ctx.fillStyle = "#999999";
+
+      ctx.font =
+        "bold 45px Arial";
+
+      ctx.textAlign = "center";
+
+      ctx.fillText(
+        "ADD YOUR PHOTO",
+        photoX,
+        photoY
+      );
+
+    }
+
+
+    ctx.restore();
+
+
+    /*
+     * Photo border
+     */
+
+    ctx.strokeStyle = "#ffffff";
+
+    ctx.lineWidth = 15;
+
+    roundedRect(
+      ctx,
+      photoX - photoWidth / 2,
+      photoY - photoHeight / 2,
+      photoWidth,
+      photoHeight,
+      40
+    );
+
+    ctx.stroke();
+
+
+    /*
+     * Bottom message
+     */
+
+    ctx.fillStyle = "#ffffff";
+
+    ctx.font =
+      "bold 45px Arial";
+
+    ctx.fillText(
+      "मेरा गाँव • मेरा अभिमान",
+      W / 2,
+      1740
+    );
+
+
+    /*
+     * Small footer
+     */
+
+    ctx.fillStyle = "#333333";
+
+    ctx.font =
+      "28px Arial";
+
+    ctx.fillText(
+      "Proud of my village ❤️",
+      W / 2,
+      1800
+    );
+
+  }
+
+
+  /*
+   * ----------------------------------------------------
+   * ROUNDED RECTANGLE
+   * ----------------------------------------------------
+   */
+
+  function roundedRect(
+    ctx,
+    x,
+    y,
+    width,
+    height,
+    radius
+  ) {
+
+    ctx.beginPath();
+
+    ctx.moveTo(x + radius, y);
+
+    ctx.lineTo(
+      x + width - radius,
+      y
+    );
+
+    ctx.quadraticCurveTo(
+      x + width,
+      y,
+      x + width,
+      y + radius
+    );
+
+    ctx.lineTo(
+      x + width,
+      y + height - radius
+    );
+
+    ctx.quadraticCurveTo(
+      x + width,
+      y + height,
+      x + width - radius,
+      y + height
+    );
+
+    ctx.lineTo(
+      x + radius,
+      y + height
+    );
+
+    ctx.quadraticCurveTo(
+      x,
+      y + height,
+      x,
+      y + height - radius
+    );
+
+    ctx.lineTo(
+      x,
+      y + radius
+    );
+
+    ctx.quadraticCurveTo(
+      x,
+      y,
+      x + radius,
+      y
+    );
+
+    ctx.closePath();
+
+  }
+
+
+  /*
+   * ----------------------------------------------------
+   * PHOTO UPLOAD
+   * ----------------------------------------------------
+   */
+
+  photoInput.addEventListener(
+    "change",
+    function(event) {
+
+      const file =
+        event.target.files[0];
+
+      if (!file) {
+        return;
+      }
+
+
+      if (!file.type.startsWith("image/")) {
+
+        alert(
+          "Please select an image."
+        );
+
+        return;
+      }
+
+
+      const reader =
+        new FileReader();
+
+
+      reader.onload = function(e) {
+
+        const img =
+          new Image();
+
+        img.onload = function() {
+
+          photo = img;
+
+          drawStatus();
+
+        };
+
+        img.src =
+          e.target.result;
+
+      };
+
+
+      reader.readAsDataURL(file);
+
+    }
+  );
+
+
+  /*
+   * ----------------------------------------------------
+   * CONTROLS
+   * ----------------------------------------------------
+   */
+
+  zoomInput.addEventListener(
+    "input",
+    function() {
+
+      zoomValue.textContent =
+        parseFloat(
+          zoomInput.value
+        ).toFixed(1);
+
+      drawStatus();
+
+    }
+  );
+
+
+  positionXInput.addEventListener(
+    "input",
+    drawStatus
+  );
+
+
+  positionYInput.addEventListener(
+    "input",
+    drawStatus
+  );
+
+
+  titleInput.addEventListener(
+    "input",
+    drawStatus
+  );
+
+
+  subtitleInput.addEventListener(
+    "input",
+    drawStatus
+  );
+
+
+  /*
+   * ----------------------------------------------------
+   * DOWNLOAD
+   * ----------------------------------------------------
+   */
+
+  downloadBtn.addEventListener(
+    "click",
+    function() {
+
+      drawStatus();
+
+
+      const link =
+        document.createElement("a");
+
+
+      link.download =
+        "mere-gaon-mera-abhiman.png";
+
+
+      link.href =
+        canvas.toDataURL(
+          "image/png",
+          1.0
+        );
+
+
+      link.click();
+
+    }
+  );
+
+
+  /*
+   * ----------------------------------------------------
+   * SHARE
+   * ----------------------------------------------------
+   */
+
+  shareBtn.addEventListener(
+    "click",
+    async function() {
+
+      drawStatus();
+
+
+      canvas.toBlob(
+        async function(blob) {
+
+          if (!blob) {
+            return;
+          }
+
+
+          const file =
+            new File(
+              [blob],
+              "mere-gaon-mera-abhiman.png",
+              {
+                type: "image/png"
+              }
+            );
+
+
+          /*
+           * Modern mobile browsers
+           * support Web Share API.
+           */
+
+          if (
+            navigator.share &&
+            navigator.canShare &&
+            navigator.canShare({
+              files: [file]
+            })
+          ) {
+
+            try {
+
+              await navigator.share({
+
+                title:
+                  "Mere Gaon Mera Abhiman",
+
+                text:
+                  "Mere Gaon Mera Abhiman ❤️",
+
+                files: [file]
+
+              });
+
+            } catch (error) {
+
+              console.log(
+                "Share cancelled."
+              );
+
+            }
+
+          } else {
+
+            alert(
+              "Direct sharing is not supported on this browser. Please download the image and share it manually."
+            );
+
+          }
+
+        },
+        "image/png"
+      );
+
+    }
+  );
+
+
+  /*
+   * ----------------------------------------------------
+   * RESET
+   * ----------------------------------------------------
+   */
+
+  resetBtn.addEventListener(
+    "click",
+    function() {
+
+      photo = null;
+
+      photoInput.value = "";
+
+      titleInput.value =
+        "MERE GAON";
+
+      subtitleInput.value =
+        "MERA ABHIMAN";
+
+      zoomInput.value = 1;
+
+      positionXInput.value = 0;
+
+      positionYInput.value = 0;
+
+      zoomValue.textContent =
+        "1.0";
+
+      drawStatus();
+
+    }
+  );
+
+
+  /*
+   * ----------------------------------------------------
+   * INITIAL DRAW
+   * ----------------------------------------------------
+   */
+
+  drawStatus();
+
+</script>
+
+</body>
+</html>
