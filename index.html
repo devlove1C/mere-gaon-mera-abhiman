@@ -402,6 +402,12 @@
 
   const photoInput = document.getElementById("photoInput");
 
+  const uploadBtn = document.getElementById("uploadBtn");
+
+uploadBtn.addEventListener("click", function () {
+  photoInput.click();
+});
+
   const titleInput = document.getElementById("title");
   const subtitleInput = document.getElementById("subtitle");
 
